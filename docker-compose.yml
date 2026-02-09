@@ -1,0 +1,22 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_NUM_THREADS=8   #utilisation des 8 coeurs physique
+    entrypoint: >
+      bash -c "
+        ollama serve &
+        sleep 10 &&
+        ollama pull mistral &&
+        wait
+      "
+
+volumes:
+  ollama_data:

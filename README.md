@@ -21,3 +21,11 @@ A ceci je vais ajouter du `Chevauchement ou Overlap` afin d'éviter la perte de 
 
 Pour le moment je n'ajoute pas d'OCR car le pdf est sélectionnable mais les images ne seront pas traité.
 
+## 2) Embedding
+
+Le but est de transformer le texte en vecteurs avec un modèle d'embedding. Dans mon cas j'ai choisi un modèle trés populaire `nomic-embed-text:v1.5`.
+Je fais ce choix car il est open source et peut etre utiliser en local. Ceci permet de garder la donnée dans mon environnement de dev meme si elle n'est pas sensible.
+
+Vus que je n'ai pas les droit root sur la machine j'utilise un docker pour installer `ollama` et `nomic-embed-text:v1.5` et j'expose le port 11434:11434 sur le localhost. Ce derniers est le port par defaut de la bibliothèque `ollama`
+
+Suite a mes recherches il est conseiller d'enrichir les 

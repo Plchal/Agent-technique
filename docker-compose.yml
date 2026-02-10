@@ -15,6 +15,7 @@ services:
         ollama serve &
         sleep 10 &&
         ollama pull mistral &&
+        ollama pull nomic-embed-text &&
         wait
       "
 

@@ -1,6 +1,7 @@
 from load_pdf import loader
 from splitter import text_splitter
 from embeddings import get_embeddings_for_chunks
+from store import upload_data_with_snowpark
 
 def main():
     docs =loader("../data/RTAktm125duke.pdf")
@@ -11,6 +12,7 @@ def main():
 
     if len(vector_data[0]['embedding']) == 768:
         print("Les vecteurs font bien 768")
+    upload_data_with_snowpark(vector_data)
 
 
 if __name__ == "__main__":

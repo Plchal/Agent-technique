@@ -28,4 +28,17 @@ Je fais ce choix car il est open source et peut etre utiliser en local. Ceci per
 
 Vus que je n'ai pas les droit root sur la machine j'utilise un docker pour installer `ollama` et `nomic-embed-text:v1.5` et j'expose le port 11434:11434 sur le localhost. Ce derniers est le port par defaut de la bibliothèque `ollama`
 
-Suite a mes recherches il est conseiller d'enrichir les 
+Suite a mes recherches il est conseiller d'enrichir les chunks afin d'avoir les données suivante :
+* **Le Content**
+    C'est le texte écris sous la forme d'une string
+
+* **La Metadata**
+    Elle peut contenir la l'origine du texte titre, page, chapitre, l'ordre le numéro du chunk ou bien le contexte
+
+* **L'Embedding**
+    La vectorisation du chunk par un modèle d'embedding.
+
+
+## 3) Stockage de la data
+
+Pour le stockage j'ai choisi snowflake pour m'exercer sur un outils data/cloud puissant et adapté a ce que je veux réaliser avec leur types Vector parfait pour le stockage d'embedding.

@@ -12,7 +12,7 @@ Plusieur option sont possible :
     Coupe brutalement le texte
 * **Recursive Character Chunking**  
     Coupe au niveau de paragraphe (double '\n'), si cela est trop il coupe par phrase ('.') et si cela est troujours trop gros il coupe au mots (' ').
-* **Semantic Chnunkinmg**   
+* **Semantic Chnunkinmg**
     L'ia analyse le sens du texte et coupe que quand le sujet change.
 
 Pour un debut je vais commencer par utiliser une stratégie de chunking classique qui est la `Recursive Character`.
@@ -42,3 +42,10 @@ Suite a mes recherches il est conseiller d'enrichir les chunks afin d'avoir les 
 ## 3) Stockage de la data
 
 Pour le stockage j'ai choisi snowflake pour m'exercer sur un outils data/cloud puissant et adapté a ce que je veux réaliser avec leur types Vector parfait pour le stockage d'embedding.
+
+Pour ceci j'ai créer un compte sur le site snowflake afin d'avoir 30 jours d'essais gratui.
+Une fois le compte créé, je vais utiliser Snowpark qui est un bibliotheque permet de traiter les données directement en python.
+J'ai réaliser un script python pour créer la base de donnée pour stocker mes chuncks enrichies.
+Ensuite je créer une fonction qui permet de stocker mes chuncks enrichies directement après l'embedding.
+
+## 4) Recherche Utilisateur

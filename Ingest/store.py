@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def upload_data_with_snowpark(vector_data):
+def get_snowpark_session():
     connection_parameters = {
         "account": os.getenv("SNOWFLAKE_ACCOUNT"),
         "user": os.getenv("SNOWFLAKE_USER"),
@@ -22,7 +22,11 @@ def upload_data_with_snowpark(vector_data):
     session = Session.builder.configs(connection_parameters).create()
     session.use_database(os.getenv("SNOWFLAKE_DATABASE"))
     session.use_schema(os.getenv("SNOWFLAKE_SCHEMA"))
+    return session
 
+def upload_data_with_snowpark(vector_data):
+    
+    session = get_snowpark_session
     try :
         data_with_id = []
         for row in vector_data:

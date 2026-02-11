@@ -2,10 +2,9 @@ import os
 from snowflake.snowpark import Session
 from dotenv import load_dotenv
 
-# Charge les variables
 load_dotenv()
 
-def force_create_infrastructure():
+def create_infrastructure():
     connection_parameters = {
         "account": os.getenv("SNOWFLAKE_ACCOUNT"),
         "user": os.getenv("SNOWFLAKE_USER"),
@@ -50,4 +49,4 @@ def force_create_infrastructure():
         session.close()
 
 if __name__ == "__main__":
-    force_create_infrastructure()
+    create_infrastructure()

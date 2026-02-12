@@ -1,5 +1,5 @@
-import ollama
-from embedding import embedding
+from utils import embedding
+
 
 def get_embeddings_for_chunks(langchain_chunks):
     vector_data = []

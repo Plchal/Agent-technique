@@ -1,7 +1,4 @@
-from load_pdf import loader
-from splitter import text_splitter
-from chunks_embeddings import get_embeddings_for_chunks
-from store import upload_data_with_snowpark
+import ingest
 import sys
 
 
@@ -11,24 +8,24 @@ def main():
         path = sys.argv[1]
 
         print(f"Load this file : {path}")
-        docs =loader("../data/RTAktm125duke.pdf")
+        docs = ingest.loader("../data/RTAktm125duke.pdf")
 
         if not docs:
             print("This is an empty files or could not be loaded.")
             return
         
         print("Chunk creation")
-        chunks = text_splitter(docs)
+        chunks = ingest.text_splitter(docs)
 
         print("Generating embeddings")
-        vector_data = get_embeddings_for_chunks(chunks)
+        vector_data = ingest.get_embeddings_for_chunks(chunks)
 
         print(f"\nTotal number of vectors created : {len(vector_data)}")
         print(f"Vector dimension : {len(vector_data[0]['embedding'])}")
 
         if len(vector_data[0]['embedding']) == 768:
             print("The vectors do indeed add up to 768")
-        upload_data_with_snowpark(vector_data)
+        ingest.upload_data_with_snowpark(vector_data)
 
     except FileNotFoundError:
         print("Error : The PDF file could not be found.")

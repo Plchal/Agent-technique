@@ -1,32 +1,16 @@
 import uuid
-from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
-from snowflake.snowpark.types import VectorType, FloatType
+from snowflake.snowpark.types import VectorType
+from utils import get_snowpark_session
 
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_snowpark_session():
-    connection_parameters = {
-        "account": os.getenv("SNOWFLAKE_ACCOUNT"),
-        "user": os.getenv("SNOWFLAKE_USER"),
-        "password": os.getenv("SNOWFLAKE_PASSWORD"),
-        "role": os.getenv("SNOWFLAKE_ROLE"),
-        "warehouse": os.getenv("SNOWFLAKE_WAREHOUSE"),
-        "database": os.getenv("SNOWFLAKE_DATABASE"),
-        "schema": os.getenv("SNOWFLAKE_SCHEMA")
-    }
-
-    session = Session.builder.configs(connection_parameters).create()
-    session.use_database(os.getenv("SNOWFLAKE_DATABASE"))
-    session.use_schema(os.getenv("SNOWFLAKE_SCHEMA"))
-    return session
-
 def upload_data_with_snowpark(vector_data):
     
-    session = get_snowpark_session
+    session = get_snowpark_session()
     try :
         data_with_id = []
         for row in vector_data:

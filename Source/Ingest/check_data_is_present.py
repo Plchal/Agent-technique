@@ -1,5 +1,5 @@
 from store import get_snowpark_session
-from snowflake.snowpark.functions import col, count
+from snowflake.snowpark.functions import count
 import os
 from dotenv import load_dotenv
 import json
@@ -16,10 +16,10 @@ def verify_data():
         df = session.table(table_name)
         
         total_rows = df.count()
-        print(f"📊 Nombre total de chunks en base : {total_rows}")
+        print(f"Nombre total de chunks en base : {total_rows}")
         
         if total_rows > 0:
-            print("\n👀 Aperçu des données :")
+            print("\nAperçu des données :")
             df.select("ID", "CONTENT").show(3)
             
             sample = df.select("EMBEDDING").limit(1).collect()

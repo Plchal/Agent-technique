@@ -1,9 +1,10 @@
 import ollama
+from embedding import embedding
 
 def get_embeddings_for_chunks(langchain_chunks):
     vector_data = []
     for i, chunk in enumerate(langchain_chunks):
-        response = ollama.embeddings(model="nomic-embed-text", prompt=chunk.page_content)
+        response = embedding(chunk.page_content)
         vector_data.append({
             "content": chunk.page_content,
             "metadata": chunk.metadata,

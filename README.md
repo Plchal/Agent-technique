@@ -4,7 +4,8 @@ Le but de ce projet est de créer un agent IA qui est entrainer sur un fichier d
 
 Pour arriver à cela je suis partis sur le flux suivant:
 
-## 1) Ingestion de la donnée
+## Ingestion de la donné
+### 1) Chunking
 
 Le but est de lire mon fichier PDF et de le découper (Chunking)
 Plusieur option sont possible :
@@ -21,7 +22,7 @@ A ceci je vais ajouter du `Chevauchement ou Overlap` afin d'éviter la perte de 
 
 Pour le moment je n'ajoute pas d'OCR car le pdf est sélectionnable mais les images ne seront pas traité.
 
-## 2) Embedding
+### 2) Embedding
 
 Le but est de transformer le texte en vecteurs avec un modèle d'embedding. Dans mon cas j'ai choisi un modèle trés populaire `nomic-embed-text:v1.5`.
 Je fais ce choix car il est open source et peut etre utiliser en local. Ceci permet de garder la donnée dans mon environnement de dev meme si elle n'est pas sensible.
@@ -39,7 +40,7 @@ Suite a mes recherches il est conseiller d'enrichir les chunks afin d'avoir les 
     La vectorisation du chunk par un modèle d'embedding.
 
 
-## 3) Stockage de la data
+### 3) Stockage de la data
 
 Pour le stockage j'ai choisi snowflake pour m'exercer sur un outils data/cloud puissant et adapté a ce que je veux réaliser avec leur types Vector parfait pour le stockage d'embedding.
 
@@ -48,4 +49,12 @@ Une fois le compte créé, je vais utiliser Snowpark qui est un bibliotheque per
 J'ai réaliser un script python pour créer la base de donnée pour stocker mes chuncks enrichies.
 Ensuite je créer une fonction qui permet de stocker mes chuncks enrichies directement après l'embedding.
 
-## 4) Recherche Utilisateur
+
+
+L'ingestion de ma donné étant fini je peux commencer à traiter la requete utilisateur
+
+## Interrogation de la donnée 
+
+### 4) Recherche Utilisateur
+
+

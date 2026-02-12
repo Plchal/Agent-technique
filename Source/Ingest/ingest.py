@@ -1,6 +1,6 @@
 from load_pdf import loader
 from splitter import text_splitter
-from embeddings import get_embeddings_for_chunks
+from chunks_embeddings import get_embeddings_for_chunks
 from store import upload_data_with_snowpark
 import sys
 

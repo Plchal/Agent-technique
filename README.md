@@ -64,11 +64,11 @@ Une fois la question de l'utilisateur vectorisée, nous allons chercher la `Simi
 * Formule mathématique : $$\text{similarity} = \cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|}$$
 
 Une fois cela réalisé, je vais me servir de la méthode `VECTOR_COSINE_SIMILARITY` de `Snowflake` afin de comparer les vecteurs suivant la méthode ci-dessus et d'extraire mon contexte.
-Suite à quelque recherche je vais commencer par me limiter a 5 chunck de contexte.
+Suite à quelques recherches, je vais commencer par me limiter à 5 chunks de contexte.
 
 ## 5) Création du prompt
 
-Une fois notre contexte extrait il vient se positionner au sein d'un prompt assez simple ainsi que la question de l'utilisateur : 
+Une fois notre contexte extrait, il vient se positionner au sein d'un prompt assez simple ainsi que la question de l'utilisateur : 
 ```python
 f"""
     Tu es un expert mécanique KTM. Réponds UNIQUEMENT à partir du contexte fourni.
@@ -85,14 +85,14 @@ C'est un premier prompt de test très simple pour voir si concept fonctionne.
 
 ## 6) Utilisation d'un modèle
 
-Avec `ollama` on peux utiliser differents models en local. Pour commencer j' ai choisi mistral avec son modele `Mistral-7B`. 
+Avec `ollama` on peut utiliser différents modèles en local. Pour commencer j'ai choisi Mistral avec son modèle `Mistral-7B`. 
 J'ai choisi ce modèle pour les raison suivante :
-    - La doc étant  en français celui ci est performant sur tout pour le mots techniques (cardan, arbre à câme, etc...)
-    - Le modele est léger et rapide sachant qu'il tourne en local sur `CPU` et `RAM`
-    - Open source
+– La doc étant  en français, celui-ci est performant sur tout pour les mots techniques (cardan, arbre à cames, etc...)
+– Le modèle est léger et rapide, sachant qu'il tourne en local sur `CPU` et `RAM`
+– Open source.
 
-Je lui envoie le prompt générer au par avant et celui si me retourne un reponse.
-Pour cela je paramettre le modele grossièrement avec le code suivant:
+Je lui envoie le prompt généré auparavant et celui-ci me retourne une réponse.
+Pour cela je paramètre le modèle grossièrement avec le code suivant:
 ```python
     response = ollama.chat(model='mistral', messages=[
             {'role': 'user', 'content': prompt},
@@ -105,7 +105,7 @@ Voici mon test :
     python3 ask_my_docs.py "Procédure d'entretien périodique vidange huile moteur et remplacement filtre à huile avec tout les couples de serrage necessaire"
 ```
 
-J' ai print le context extrait afin de voir si il est cohérant (de plus étant ancien mécanicien ceci me permet de virifier la cohérence) :
+J'ai print le contexte extrait afin de voir s'il est cohérent (de plus, étant ancien mécanicien, ceci me permet de vérifier la cohérence) :
 ```bash
 – Mettre en place un nouveau filtre à huile5.
 – Huiler le joint torique du couvercle de filtre à huile. Mettre le
@@ -270,7 +270,7 @@ couvercle de filtre à huile6 en place.
 
 ```
 
-Une fois le traitement fini voici ma première réponnse :
+Une fois le traitement fini, voici ma première réponse :
 ```bash
 Voici la reponse :
  La procédure d'entretien périodique pour la vidange de l'huile moteur et le remplacement du filtre à huile sur un KTM consiste principalement dans les étapes suivantes :

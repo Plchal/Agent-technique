@@ -1,12 +1,8 @@
 import uuid
 from snowflake.snowpark.functions import col
 from snowflake.snowpark.types import VectorType
-from utils import get_snowpark_session
+from utils import get_snowpark_session, SNOWFLAKE_TABLE_NAME
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 def upload_data_with_snowpark(vector_data):
     
@@ -27,7 +23,7 @@ def upload_data_with_snowpark(vector_data):
             col("EMBEDDING").cast(VectorType(float, 768))
         )
 
-        df.write.mode("append").save_as_table(os.getenv("SNOWFLAKE_TABLE_NAME"))
+        df.write.mode("append").save_as_table(SNOWFLAKE_TABLE_NAME)
 
         print(f"[Snowpark] {len(vector_data)} chunks synchronisés !")
 

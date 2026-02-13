@@ -1,16 +1,15 @@
-import os
 from snowflake.snowpark import Session
 from dotenv import load_dotenv
+from utils import SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ROLE, SNOWFLAKE_WAREHOUSE, SNOWFLAKE_DATABASE, SNOWFLAKE_SCHEMA
 
-load_dotenv()
 
 def create_infrastructure():
     connection_parameters = {
-        "account": os.getenv("SNOWFLAKE_ACCOUNT"),
-        "user": os.getenv("SNOWFLAKE_USER"),
-        "password": os.getenv("SNOWFLAKE_PASSWORD"),
-        "role": os.getenv("SNOWFLAKE_ROLE"),
-        "warehouse": os.getenv("SNOWFLAKE_WAREHOUSE")
+        "account": SNOWFLAKE_ACCOUNT,
+        "user": SNOWFLAKE_USER,
+        "password": SNOWFLAKE_PASSWORD,
+        "role": SNOWFLAKE_ROLE,
+        "warehouse": SNOWFLAKE_WAREHOUSE
     }
 
     print("Connexion en cours...")

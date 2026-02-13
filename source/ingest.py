@@ -8,7 +8,7 @@ def main():
         path = sys.argv[1]
 
         print(f"Load this file : {path}")
-        docs = ingest.loader("../data/RTAktm125duke.pdf")
+        docs = ingest.loader(path)
 
         if not docs:
             print("This is an empty files or could not be loaded.")

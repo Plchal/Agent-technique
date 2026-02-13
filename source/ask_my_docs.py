@@ -1,9 +1,7 @@
 import sys
-
-from utils import embedding, get_snowpark_session   
 import ollama
+from utils import embedding, get_snowpark_session   
 
-from snowflake.snowpark.functions import col, call_builtin, lit
 
 def get_contexte_from_db(session, question_embedding, limit=5):
     vector_str = str(question_embedding)
@@ -49,7 +47,7 @@ def main():
         response = ollama.chat(model='mistral', messages=[
             {'role': 'user', 'content': prompt},
         ])
-        print(response)
+        print(f"Voici la reponse :\n{response.message.content}")
 
     except Exception as e:
         print(f"Error : {e}")

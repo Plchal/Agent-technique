@@ -1,20 +1,26 @@
-# Mon premier agent IA (POC)
+# Mon premier agent IA (Work in progress)
 
-Le but de ce projet est de créer un agent IA qui est entraîné sur un fichier de documentation technique.
+Le but de ce projet est de créer un agent IA qui est entraîné sur des fichiers de documentation technique moto.
+Ce projet va se dérouler en plusieurs phases :
+* **Proof of Concept (POC) [Fini]**
+https://github.com/Plchal/Agent-technique/tree/Phase_1_POC
+* **Minimum Viable Product (MVP) [En cours]**
+* **Industrialisation**
 
-Pour arriver à cela, je suis parti sur le flux suivant:
+# 1) Proof of concept (POC) 
+Pour ce POC, je vais partir sur le flux suivant:
 
 ## Ingestion de la donné :
-### 1) Chunking
+### 1.1) Chunking
 
 Le but est de lire mon fichier PDF et de le découper (Chunking)
 Plusieurs options sont possible :
-* **Taille fixe**  
+* **Taille fixe**
     Coupe brutalement le texte
-* **Recursive Character Chunking**  
+* **Recursive Character Chunking**
     Coupe au niveau de paragraphe (double '\n'), si cela est trop, il coupe par phrase ('.') et si cela est toujours trop gros, il coupe au mot (' ').
 * **Semantic Chnunkinmg**
-L'IA analyse le sens du texte et coupe que quand le sujet change.
+    L'IA analyse le sens du texte et coupe que quand le sujet change.
 
 Pour un début, je vais commencer par utiliser une stratégie de chunking classique qui est la `Recursive Character`.
 
@@ -22,7 +28,7 @@ Pour un début, je vais commencer par utiliser une stratégie de chunking classi
 
 Pour le moment je n'ajoute pas d'OCR car le PDF est sélectionnable mais les images ne seront pas traitées.
 
-### 2) Embedding
+### 1.2) Embedding
 
 Le but est de transformer le texte en vecteurs avec un modèle d'embedding. Dans mon cas, j'ai choisi un modèle très populaire `nomic-embed-text:v1.5`.
 Je fais ce choix car il est open source et peut être utilisé en local. Ceci permet de garder la donnée dans mon environnement de dev même si elle n'est pas sensible.
@@ -30,17 +36,17 @@ Je fais ce choix car il est open source et peut être utilisé en local. Ceci pe
 Vu que je n'ai pas les droits root sur la machine, j'utilise un docker pour installer `ollama` et `nomic-embed-text:v1.5` et j'expose le port 11434:11434 sur le localhost. Ce dernier est le port par défaut de la bibliothèque `ollama`.
 
 Suite à mes recherches, il est conseillé d'enrichir les chunks afin d'avoir les données suivantes :
-* **Le Content**
+* **Le Content** 
     C'est le texte écrit sous la forme d'une string
 
 * **La Metadata**
     Elle peut contenir à l'origine du texte titre, page, chapitre, l'ordre, le numéro du chunk ou bien le contexte.
 
-* **L'Embedding**
+* **L'Embedding** 
     La vectorisation du chunk par un modèle d'embedding.
 
 
-### 3) Stockage de la data
+### 1.3) Stockage de la data
 
 Pour le stockage, j'ai choisi Snowflake pour m'exercer sur un outil data/cloud puissant et adapté à ce que je veux réaliser, avec leur type Vector parfait pour le stockage d'embedding.
 
@@ -55,7 +61,7 @@ L'ingestion de mes données étant finie, je peux commencer à traiter la requê
 
 ## Interrogation de la donnée :
 
-### 4) Recherche Utilisateur
+### 1.4) Recherche Utilisateur
 
 Pour cela nous allons récupérer la question de l'utilisateur afin d'appliquer dessus le même processus d'`embedding` que celui de l'`ingestion` de notre fichier.
 Une fois la question de l'utilisateur vectorisée, nous allons chercher la `Similarité Cosinus`. Ceci consiste à mesurer l'angle entre le vecteur de la question et le vecteur d'un chunk. 
@@ -66,7 +72,7 @@ Une fois la question de l'utilisateur vectorisée, nous allons chercher la `Simi
 Une fois cela réalisé, je vais me servir de la méthode `VECTOR_COSINE_SIMILARITY` de `Snowflake` afin de comparer les vecteurs suivant la méthode ci-dessus et d'extraire mon contexte.
 Suite à quelques recherches, je vais commencer par me limiter à 5 chunks de contexte.
 
-## 5) Création du prompt
+## 1.5) Création du prompt
 
 Une fois notre contexte extrait, il vient se positionner au sein d'un prompt assez simple ainsi que la question de l'utilisateur : 
 ```python
@@ -83,7 +89,7 @@ f"""
 ```
 C'est un premier prompt de test très simple pour voir si concept fonctionne.
 
-## 6) Utilisation d'un modèle
+## 1.6) Utilisation d'un modèle
 
 Avec `ollama` on peut utiliser différents modèles en local. Pour commencer j'ai choisi Mistral avec son modèle `Mistral-7B`. 
 J'ai choisi ce modèle pour les raison suivante :
@@ -106,7 +112,7 @@ Voici mon test :
 ```
 
 J'ai print le contexte extrait afin de voir s'il est cohérent (de plus, étant ancien mécanicien, ceci me permet de vérifier la cohérence) :
-```bash
+```
 – Mettre en place un nouveau filtre à huile5.
 – Huiler le joint torique du couvercle de filtre à huile. Mettre le
 couvercle de filtre à huile6 en place.
@@ -271,7 +277,7 @@ couvercle de filtre à huile6 en place.
 ```
 
 Une fois le traitement fini, voici ma première réponse :
-```bash
+```
 Voici la reponse :
  La procédure d'entretien périodique pour la vidange de l'huile moteur et le remplacement du filtre à huile sur un KTM consiste principalement dans les étapes suivantes :
 
@@ -290,8 +296,9 @@ Voici la reponse :
 
 ```
 
+# 2) Minimum Viable Product (MVP)
 
-## Source :
+# Source :
 
 * Ollama : https://docs.ollama.com/
 * Langchain : https://docs.langchain.com/

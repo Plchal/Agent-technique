@@ -1,6 +1,5 @@
-import sys
 import ollama
-from utils import embedding, get_snowpark_session   
+from utils import embedding, get_snowpark_session
 
 
 def get_contexte_from_db(session, question_embedding, limit=5):
@@ -19,22 +18,16 @@ def get_contexte_from_db(session, question_embedding, limit=5):
         
     return "\n---\n".join([r['CONTENT'] for r in rows])
 
-def main():
-    if len(sys.argv) != 2 :
-        print("Usage: python3 ask_my_docs.py \"your question\"")
-        exit (1)
-    question = sys.argv[1]
+def ask_doc(question: str):
+    
     session = get_snowpark_session()
-
     try:
-        print(f"Your question is: {question}")
         question_vector_response = embedding(question)
         question_vector = question_vector_response['embedding']
         context = get_contexte_from_db(session, question_vector)
-        print(context)
 
         prompt = f"""
-        Tu es un expert mécanique KTM. Réponds UNIQUEMENT à partir du contexte fourni.
+        Tu es un expert mécanique Moto. Réponds UNIQUEMENT à partir du contexte fourni.
         Si l'information n'est pas dans le texte, dis que tu ne sais pas.
 
         CONTEXTE RÉCUPÉRÉ DE SNOWFLAKE:
@@ -47,13 +40,10 @@ def main():
         response = ollama.chat(model='mistral', messages=[
             {'role': 'user', 'content': prompt},
         ])
-        print(f"Voici la reponse :\n{response.message.content}")
+        return(response.message.content)
 
     except Exception as e:
         print(f"Error : {e}")
+        return None
     finally:
         session.close()
-
-
-if __name__ == "__main__":
-    main()

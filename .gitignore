@@ -3,3 +3,7 @@ venv
 __pycache__
 ollama_data
 .env
+uploads/
+node_modules/
+package-lock.json
+package.json

@@ -3,9 +3,15 @@ interface IngestResponse {
     message: string;
 }
 
+interface Source {
+    page: number;
+    text: string;
+}
+
 interface ChatResponse{
     question: string;
     answer: string;
+    source: Source[];
 }
 
 document.addEventListener('DOMContentLoaded', async ()=> {
@@ -69,11 +75,32 @@ document.addEventListener('DOMContentLoaded', async ()=> {
 
             resultArea.classList.remove('d-none');
             aiResponseContent.innerHTML = `<p class="mb-0">${data.answer}</p>`;
+            console.log(data)
+            if (data.source && data.source.length > 0) {
+                const sourcesContainer = document.createElement('div');
+                sourcesContainer.className = "mt-3 pt-2 border-top";
+                const title = `<small class="text-muted d-block mb-2"><i class="bi bi-book"></i> Sources extraites du manuel :</small>`;
 
+                const badges = data.source.map((s: any) => `
+                    <div class="card bg-light border-0 mb-2 shadow-sm">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge rounded-pill bg-secondary">Page ${s.page}</span>
+                            </div>
+                            <p class="card-text small text-dark mb-0" style="font-style: italic;">
+                                "...${s.content}..."
+                            </p>
+                        </div>
+                    </div>
+                `).join('');
+
+                sourcesContainer.innerHTML = title + badges;
+                aiResponseContent.appendChild(sourcesContainer);
+            }
             resultArea.scrollIntoView({ behavior: 'smooth' });
 
         } catch (error) {
-            alert("Rag engine can't answer.");
+            console.error("Chat Error:", error);
         } finally {
             sendBtn.disabled = false;
             sendBtn.innerText = "Send question";

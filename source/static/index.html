@@ -31,7 +31,7 @@
                     <div class="mb-4 mt-auto">
                         <input class="form-control" type="file" id="fileInput" accept=".pdf">
                     </div>
-                    <button class="btn btn-success w-100 py-2" id="uploadBtn" onclick="upload_file()">
+                    <button class="btn btn-success w-100 py-2" id="uploadBtn">
                         <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
                         Upload PDF file
                     </button>
@@ -55,7 +55,7 @@
                             maxlenght="500"></textarea>
                     </div>
 
-                    <button class="btn btn-success w-100" id="sendBtn" onclick="chat_with_your_doc()">
+                    <button class="btn btn-success w-100" id="sendBtn">
                         Send question
                     </button>
                 </div>
@@ -66,7 +66,8 @@
             <div class="col-12">
                 <div id="resultArea" class="p-4 border rounded bg-white shadow-sm d-none">
                     <h6 class="fw-bold border-bottom pb-2 mb-3">AI response :</h6>
-                    <div id="aiResponseContent"></div>
+                    <div id="aiResponseContent">
+                        </div>
                 </div>
             </div>
         </div>

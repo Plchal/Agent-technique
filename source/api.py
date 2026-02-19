@@ -27,7 +27,6 @@ async def read_index():
 
 @app.post("/ingest")
 async def upload_file(file: UploadFile):
-    print(UPLOAD_DIRECTORY)
     file_location = f"{UPLOAD_DIRECTORY}/{file.filename}"
 
     os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
@@ -48,7 +47,7 @@ async def chat_with_your_doc(request: QuestionRequest):
         answer = rag_engine.ask_doc(request.question)
         if not answer:
             raise HTTPException(status_code=404, detail="Error with answer generation.")
-        return {"question": request.question, "answer": answer}
+        return {"question": request.question, "answer": answer["answer"], "sources": answer["sources"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error with RAG engine.")
     

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "outDir": "./static/dist",
+    "rootDir": "./static/src",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["static/src/**/*"],
+  "exclude": ["node_modules"]
+}

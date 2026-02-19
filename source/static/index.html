@@ -8,7 +8,7 @@
     <style>
 
         /*<link rel="stylesheet" href="style.css">*/
-        body { background-color: #ffffff; }
+        body { background-color: #6c6a6d; }
         .card { border: none; border-radius: 12px; }
         .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(124, 180, 100, 0.1); }
     </style>
@@ -16,8 +16,8 @@
 <body>
 
 <div class="container py-5">
-    <header class=""text-center mb-5></header>
-        <h1 class="card shadow-sm h-100">Technical Review Assistant</h1>
+    <header class="text-center mb-5">
+        <h1 class="card shadow-sm fw-bold h-100">Technical Review Assistant</h1>
         <p class="text-muted">Ingest your Technical Review in PDF and ask it.</p>
     </header>
 
@@ -29,9 +29,9 @@
                     <h5 class="card-title fw-bold mb-3">1) Technical Review</h5>
                     <p class="card-text text-muted small">Upload your Technical Review.</p>
                     <div class="mb-4 mt-auto">
-                        <input class="form-control" type="file" id="pdfFile" accept=".pdf">
+                        <input class="form-control" type="file" id="fileInput" accept=".pdf">
                     </div>
-                    <button class="btn btn-primary w-100 py-2" id="uploadBtn" onclick="upload_file()">
+                    <button class="btn btn-success w-100 py-2" id="uploadBtn" onclick="upload_file()">
                         <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
                         Upload PDF file
                     </button>
@@ -40,9 +40,9 @@
         </div>
 
         <div class="col-md-7 col-lg-8">
-            <div class=""card shadow-sm h-100>
+            <div class="card shadow-sm h-100">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-3">2) Analyse</h5>
+                    <h5 class="card-title fw-bold mb-3">2) Analyse</h5>
                     <p class="card-text text-muted small">Ask your question.</p>
 
                     <div class="mb-3 mt-2">
@@ -55,7 +55,7 @@
                             maxlenght="500"></textarea>
                     </div>
 
-                    <button class="btn btn-success w-100" id="sendQuestionBtn" onclick="chat_with_your_doc()">
+                    <button class="btn btn-success w-100" id="sendBtn" onclick="chat_with_your_doc()">
                         Send question
                     </button>
                 </div>

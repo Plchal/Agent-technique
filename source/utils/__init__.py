@@ -1,6 +1,13 @@
 from .access_snowflake import get_snowpark_session
 from .embedding import embedding
-from .load_env import SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ROLE, SNOWFLAKE_WAREHOUSE, SNOWFLAKE_DATABASE, SNOWFLAKE_SCHEMA, SNOWFLAKE_TABLE_NAME, UPLOAD_DIRECTORY
+from .load_env import SNOWFLAKE_ACCOUNT,\
+                        SNOWFLAKE_USER,\
+                        SNOWFLAKE_PASSWORD,\
+                        SNOWFLAKE_ROLE,\
+                        SNOWFLAKE_WAREHOUSE,\
+                        SNOWFLAKE_DATABASE,\
+                        SNOWFLAKE_SCHEMA,\
+                        UPLOAD_DIRECTORY
 
 
 __all__ = [
@@ -13,6 +20,5 @@ __all__ = [
     "SNOWFLAKE_WAREHOUSE",
     "SNOWFLAKE_DATABASE",
     "SNOWFLAKE_SCHEMA",
-    "SNOWFLAKE_TABLE_NAME",
     "UPLOAD_DIRECTORY",
 ]

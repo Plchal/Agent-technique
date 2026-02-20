@@ -17,6 +17,9 @@ interface ChatResponse{
 document.addEventListener('DOMContentLoaded', async ()=> {
 
     const uploadBtn = document.getElementById('uploadBtn') as HTMLButtonElement;
+    const brandInput = document.getElementById('brandInput') as HTMLTextAreaElement;
+    const modelInput = document.getElementById('modelInput') as HTMLTextAreaElement;
+    const yearInput = document.getElementById('yearInput') as HTMLTextAreaElement;
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     const spinner = document.getElementById('spinner') as HTMLElement;
 
@@ -33,6 +36,9 @@ document.addEventListener('DOMContentLoaded', async ()=> {
 
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
+        formData.append('brand', brandInput.value);
+        formData.append('model', modelInput.value);
+        formData.append('year', yearInput.value);
 
         try {
             uploadBtn.disabled = true;
@@ -56,8 +62,20 @@ document.addEventListener('DOMContentLoaded', async ()=> {
         }
     });
 
+    const modelSelect = document.getElementById('modelSelect') as HTMLSelectElement;
+    try {
+        const response = await fetch('/models');
+        const models = await response.json();
+        
+        modelSelect.innerHTML = models.map((m: any) => 
+            `<option value="${m.id}">${m.name}</option>`
+        ).join('');
+    } catch (e) {
+        modelSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+    }
 
     sendBtn.addEventListener('click', async () => {
+        const docId = modelSelect.value;
         const question = questionInput.value.trim();
         if (!question) return;
 
@@ -68,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
             const response = await fetch('/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: question })
+                body: JSON.stringify({ question: question, doc_id: docId })
             });
 
             const data: ChatResponse = await response.json();

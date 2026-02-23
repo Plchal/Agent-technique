@@ -34,9 +34,9 @@ def create_infrastructure():
         session.sql("CREATE DATABASE IF NOT EXISTS RAG_DB").collect()
         session.sql("CREATE SCHEMA IF NOT EXISTS RAG_DB.RAG_SCHEMA").collect()
 
-        session.sql("""
-            CREATE TABLE IF NOT EXISTS RAG_DB.RAG_SCHEMA.DOCUMEMT (
-                ID STRING DEFAULT UUID_STRING(),
+        session.sql(f"""
+            CREATE TABLE IF NOT EXISTS {TABLE_DOCUMENTS} (
+                DOC_ID STRING PRIMARY KEY,
                 FILE_NAME STRING,
                 BRAND STRING,
                 MODEL STRING,
@@ -46,20 +46,20 @@ def create_infrastructure():
 
         """).collect()
 
-        session.sql("""
-            CREATE TABLE IF NOT EXISTS RAG_DB.RAG_SCHEMA.DOCUMENT_CHUNKS (
+        session.sql(f"""
+            CREATE TABLE IF NOT EXISTS {TABLE_CHUNKS} (
                 ID STRING DEFAULT UUID_STRING(),
                 DOC_ID STRING,
                 CONTENT STRING,
                 METADATA VARIANT,
                 EMBEDDING VECTOR(FLOAT, 768),
-                FOREIGN KEY (DOC_ID) REFERENCES RAG_DB.RAG_SCHEMA.DOCUMENTS(DOC_ID)
+                FOREIGN KEY (DOC_ID) REFERENCES {TABLE_DOCUMENTS}(DOC_ID)
             );
         """).collect()
         return 0
     except Exception as e:
         print(f"\nError : {e}")
-        return 1
+        raise e
     finally:
         session.close()
 
@@ -97,8 +97,8 @@ def upload_data_with_snowpark(vector_data, file_name: str, brand: str, model: st
 
 def text_splitter(pages)-> list:
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=600,
+        chunk_overlap=90,
         length_function=len,
         separators=["\n\n", "\n", " ", ""]
     )
@@ -138,7 +138,6 @@ def ingest_pdf(path: str, brand: str, model: str, year: int):
         chunks = text_splitter(docs)
         vector_data = get_embeddings_for_chunks(chunks)
         upload_data_with_snowpark(vector_data, file_name, brand, model, year)
-
     except FileNotFoundError as e:
         raise e
     except Exception as e:

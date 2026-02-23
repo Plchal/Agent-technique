@@ -1,5 +1,6 @@
 import os
 import uvicorn
+import traceback
 
 from fastapi import FastAPI, UploadFile, HTTPException, Form
 from fastapi.staticfiles import StaticFiles
@@ -38,7 +39,11 @@ async def upload_file(file: UploadFile, brand: str = Form(...), model: str = For
         ingester.ingest_pdf(file_location, brand, model, year)
         return {"message": f"{file.filename} saved at {file_location}"}
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail="Ingestion failure.")
+    finally:
+        if(os.path.exists(file_location)):
+            os.remove(file_location)
 
 @app.get("/models")
 async def get_models():
@@ -51,6 +56,7 @@ async def get_models():
         """).collect()
         return[{"id": r['DOC_ID'], "name": r['FULL_NAME']} for r in rows]
     except Exception as e:
+        traceback.print_exc()
         return
     finally:
         session.close()
@@ -62,7 +68,12 @@ async def chat_with_your_doc(request: QuestionRequest):
         if not answer:
             raise HTTPException(status_code=404, detail="Error with answer generation.")
         return {"question": request.question, "answer": answer["answer"], "sources": answer["sources"]}
+    except ConnectionError as ce:
+        raise HTTPException(status_code=503, detail=str(ce))
+    except RuntimeError as re:
+        raise HTTPException(status_code=500, detail=str(re))
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail="Error with RAG engine.")
     
 

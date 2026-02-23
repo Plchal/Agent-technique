@@ -1,4 +1,3 @@
-
 interface IngestResponse {
     message: string;
 }
@@ -11,7 +10,7 @@ interface Source {
 interface ChatResponse{
     question: string;
     answer: string;
-    source: Source[];
+    sources: Source[];
 }
 
 document.addEventListener('DOMContentLoaded', async ()=> {
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
     const resultArea = document.getElementById('resultArea') as HTMLElement;
 
     uploadBtn.addEventListener('click', async () => {
-        if (!fileInput.files || fileInput.isDefaultNamespace.length === 0) {
+        if (!fileInput.files || fileInput.files.length === 0) {
             alert("");
             return;
         }
@@ -94,12 +93,12 @@ document.addEventListener('DOMContentLoaded', async ()=> {
             resultArea.classList.remove('d-none');
             aiResponseContent.innerHTML = `<p class="mb-0">${data.answer}</p>`;
             console.log(data)
-            if (data.source && data.source.length > 0) {
+            if (data.sources && data.sources.length > 0) {
                 const sourcesContainer = document.createElement('div');
                 sourcesContainer.className = "mt-3 pt-2 border-top";
                 const title = `<small class="text-muted d-block mb-2"><i class="bi bi-book"></i> Sources extraites du manuel :</small>`;
 
-                const badges = data.source.map((s: any) => `
+                const badges = data.sources.map((s: any) => `
                     <div class="card bg-light border-0 mb-2 shadow-sm">
                         <div class="card-body py-2 px-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">

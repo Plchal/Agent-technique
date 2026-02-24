@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
             uploadBtn.disabled = true;
             spinner.classList.remove('d-none');
 
-            const response = await fetch('/ingest', {
+            const response = await fetch('http://localhost:8000/ingest', {
                 method: 'POST',
                 body: formData
             });
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
 
     const modelSelect = document.getElementById('modelSelect') as HTMLSelectElement;
     try {
-        const response = await fetch('/models');
+        const response = await fetch('http://localhost:8000/models');
         const models = await response.json();
         
         modelSelect.innerHTML = models.map((m: any) => 
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
             sendBtn.disabled = true;
             sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Thinking...';
             
-            const response = await fetch('/ask', {
+            const response = await fetch('http://localhost:8000/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ question: question, doc_id: docId })

@@ -1,12 +1,15 @@
 services:
+  # Service Ia Local avec Ollama
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped
+    networks:
+      - agent_net
     ports:
-      - "127.0.0.1:11434:11434"
+      - "11434:11434"
     volumes:
-      - ./ollama_data:/root/.ollama
+      - ollama_data:/root/.ollama
     environment:
       - OLLAMA_KEEP_ALIVE=24h
       - OLLAMA_NUM_THREADS=8   #utilisation des 8 coeurs physique
@@ -18,6 +21,39 @@ services:
         ollama pull nomic-embed-text &&
         wait
       "
+  
+  # Backend avec le moteur
+  app:
+    build: ./backend
+    container_name: agent_back
+    restart: on-failure
+    networks:
+      - agent_net
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    env_file:
+      - .env
+    depends_on:
+      - ollama
+  
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: agent_front
+    restart: on-failure
+    networks:
+      - agent_net
+    ports:
+      - "3000:80" # On expose le front sur http://localhost:3000
+    depends_on:
+      - app
 
+networks:
+  agent_net:
+    driver: bridge
+
+#Volume persistant afin de garder le modele pour ne pas le retélécharger.
 volumes:
   ollama_data:

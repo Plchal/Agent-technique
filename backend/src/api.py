@@ -3,27 +3,36 @@ import uvicorn
 import traceback
 
 from fastapi import FastAPI, UploadFile, HTTPException, Form
-from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from utils import UPLOAD_DIRECTORY, get_snowpark_session
-from backend import ingester, rag_engine
-
-
-app = FastAPI()
+from engine import ingester, rag_engine
 
 
 class QuestionRequest(BaseModel):
     question: str
     doc_id: str
 
-app.mount("/dist", StaticFiles(directory="static/dist"), name="dist")
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # En production on mettrait ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-@app.get("/")
-async def read_index():
-    return FileResponse('static/index.html')
+
+#app.mount("/dist", StaticFiles(directory="static/dist"), name="dist")
+#@app.get("/")
+#async def read_index():
+#    return FileResponse('static/index.html')
 
 
 @app.post("/ingest")
@@ -57,7 +66,7 @@ async def get_models():
         return[{"id": r['DOC_ID'], "name": r['FULL_NAME']} for r in rows]
     except Exception as e:
         traceback.print_exc()
-        return
+        return []
     finally:
         session.close()
 
@@ -78,4 +87,4 @@ async def chat_with_your_doc(request: QuestionRequest):
     
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

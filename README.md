@@ -10,7 +10,7 @@ https://github.com/Plchal/Agent-technique/tree/Phase_1_POC
 # 1) Proof of concept (POC) 
 Pour ce POC, je vais partir sur le flux suivant:
 
-## Ingestion de la donné :
+## Ingestion de la donnée :
 ### 1.1) Chunking
 
 Le but est de lire mon fichier PDF et de le découper (Chunking)
@@ -19,12 +19,13 @@ Plusieurs options sont possible :
     Coupe brutalement le texte
 * **Recursive Character Chunking**
     Coupe au niveau de paragraphe (double '\n'), si cela est trop, il coupe par phrase ('.') et si cela est toujours trop gros, il coupe au mot (' ').
-* **Semantic Chnunkinmg**
+* **Semantic Chnunking**
     L'IA analyse le sens du texte et coupe que quand le sujet change.
 
-Pour un début, je vais commencer par utiliser une stratégie de chunking classique qui est la `Recursive Character`.
+Pour un début, l'utilisation d'une stratégie de chunking `Recursive Character Chunking` semble un bon choix.
 
-À ceci, je vais ajouter du `Chevauchement ou Overlap` afin d'éviter la perte de contexte ou de sens due au découpage, je vais essayer avec un pareto (80/20). Donc sur un chunk d'une taille de 1000, j'aurais 200 d'overlap.
+À ceci, je vais ajouter du `Chevauchement ou Overlap` afin d'éviter la perte de contexte ou de sens due au découpage.
+Pour le parametrage commencer avec un chunk d'une taille de 1000 et une taille de 200 pour l'overlap.
 
 Pour le moment je n'ajoute pas d'OCR car le PDF est sélectionnable mais les images ne seront pas traitées.
 
@@ -50,7 +51,7 @@ Suite à mes recherches, il est conseillé d'enrichir les chunks afin d'avoir le
 
 Pour le stockage, j'ai choisi Snowflake pour m'exercer sur un outil data/cloud puissant et adapté à ce que je veux réaliser, avec leur type Vector parfait pour le stockage d'embedding.
 
-Pour ceci, j'ai créé un compte sur le site Snowflake afin d'avoir 30 jours d'essais gratui.
+Pour ceci, j'ai créé un compte sur le site Snowflake afin d'avoir 30 jours d'essais gratuit.
 Une fois le compte créé, je vais utiliser Snowpark, qui est une bibliothèque permettant de traiter les données directement en python.
 J'ai réalisé un script Python pour créer la base de données pour stocker mes chunks enrichis.
 Ensuite je crée une fonction qui permet de stocker mes chunks enrichis directement après l'embedding.
@@ -108,7 +109,7 @@ Pour cela je paramètre le modèle grossièrement avec le code suivant:
 ## Résultat :
 Voici mon test : 
 ```bash
-    python3 ask_my_docs.py "Procédure d'entretien périodique vidange huile moteur et remplacement filtre à huile avec tout les couples de serrage necessaire"
+    python3 ask_my_docs.py "Procédure d'entretien périodique vidange huile moteur et remplacement filtre à huile avec tous les couples de serrage necessaire"
 ```
 
 J'ai print le contexte extrait afin de voir s'il est cohérent (de plus, étant ancien mécanicien, ceci me permet de vérifier la cohérence) :
@@ -298,9 +299,81 @@ Voici la reponse :
 
 # 2) Minimum Viable Product (MVP)
 
+Le but de cette phase est de passer de scripts exécutables en local à une application web conteneurisée, capable d'ingérer de nouveaux documents de manière dynamique et d'avoir une interface utilisateur (UI).
+Pour ce MV, le flux a été optimisé et automatisé.
+
+## 2.1) Architecture et conteneurisation de base
+Mise en place de l'environnement reproductible pour passer outre les contraintes locales.
+* Création d'un fichier docker-compose.yml : Pour orchester  tour les services entre eux
+* Securisation des identifiants avec l'utilisation d'un fichier d'environnement `.env`
+
+## 2.2) Structuration de la base de donnée:
+
+Restructuration de la base de données afin de stocker différentes documentations techniques de différentes motos et de les questionner précisément.
+
+```
++-----------------------+       +-------------------------+
+|      DOCUMENTS        |       |         CHUNKS          |
++-----------------------+       +-------------------------+
+| PK  DOC_ID            | <---+ | PK  ID                  |
+|     FILE_NAME         |     | | FK  DOC_ID              |
+|     BRAND             |     | |     CONTENT             |
+|     MODEL             |     +-|     METADATA            |
+|     YEAR              |       |     EMBEDDING           |
+|     UPLOAD_DATE       |       +-------------------------+
++-----------------------+
+```
+
+Cette structuration me permet de répertorier quelle documentation a été ingérée et de le questionner lui précisément en fonction du document choisi avec chaque chunk qui pointe vers le document de provenance grâce à la foreign key.
+
+## 2.3) Orchestration du RAG
+Liaison entre la base de données, la requête de l'utilisateur et le modèle d'IA
+* Récupération du document a questionné
+* Utilisation de LangChain pour formater les requêtes, gérer la Similarité Cosinus dans Snowflake, et injecter le contexte dans le prompt.
+
+* Ajustement du prompt système pour l'agent (basé sur Mistral-7B) afin de structurer les réponses pour une interface graphique plutôt qu'un terminal.
+
+* Suite à quelques tests, le chunking semble trop large. Reprise de celui ci avec un `taille de 600` et un `overlap de 90`.
+## 2.4) Transparence et Sources
+L'IA ayant tendance à halluciner, l'objectif est de lutter contre en assurant la traçabilité de l'information.
+* Modification du backend pour qu'il retourne non seulement la réponse générée, mais aussi les métadonnées (nom du document, numéro de page) associées aux chunks utilisés.
+
+* Bénéfice : l'utilisateur peut auditer la réponse en se référant directement au manuel.
+## 2.5) Interface Utilisateur
+
+Développement de l'interface graphique accessible via navigateur  avec localhost sur le port 3000
+* remplacement des commandes dans le terminal par une interface covertsationnelle.
+* Affichage des sources sous chaque réponse afin de renforcer la confiance dans l'outil et d'aider l'utilisateur
+
+## 2.6) Finalisation, test et Déploiement
+* Vérification de la résilience des conteneurs via Docker Compose.
+* Consolidation des liens entre le front, le back et la db
+* Test de l'interface et de l'application.
+
+# Utilisation :
+
+Créer un fichier `.env` à la racine du projet qui ressemble à ce qui suit.
+```.env
+SNOWFLAKE_ACCOUNT="Your"
+SNOWFLAKE_USER="Your"
+SNOWFLAKE_PASSWORD="Your"
+SNOWFLAKE_ROLE="Your"
+SNOWFLAKE_WAREHOUSE=RAG_WH
+SNOWFLAKE_DATABASE=RAG_DB
+SNOWFLAKE_SCHEMA=RAG_SCHEMA
+UPLOAD_DIRECTORY=./uploads
+```
+
+Créer un dossier ollama_data avec la commande suivante `mkdir ollama_data`
+
+Puis lancer le projet avec la commande suivante `docker compose -f docker-compose.yml up -d`
+Une fois les services disponibles, ouvrez une page web à l'adresse suivante `http://0.0.0.0:3000/`
+
+
 # Source :
 
 * Ollama : https://docs.ollama.com/
 * Langchain : https://docs.langchain.com/
 * Snowflake : https://docs.snowflake.com/en/ | https://www.youtube.com/@SnowflakeInc
 * Fonctionnement d' un agent IA : https://blog.stephane-robert.info/docs/developper/programmation/python/ia/
+* Docker: https://docs.docker.com/reference/compose-file | https://docs.docker.com/reference

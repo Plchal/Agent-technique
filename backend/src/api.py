@@ -4,8 +4,6 @@ import traceback
 
 from fastapi import FastAPI, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
-#from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from utils import UPLOAD_DIRECTORY, get_snowpark_session
@@ -21,18 +19,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # En production on mettrait ["http://localhost:3000"]
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-
-#app.mount("/dist", StaticFiles(directory="static/dist"), name="dist")
-#@app.get("/")
-#async def read_index():
-#    return FileResponse('static/index.html')
 
 
 @app.post("/ingest")

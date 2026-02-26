@@ -1,5 +1,4 @@
 import uuid
-import os
 
 from pathlib import Path
 from utils import embedding, get_snowpark_session

@@ -2,7 +2,7 @@ import ollama
 from utils import embedding, get_snowpark_session
 
 
-def get_contexte_from_db(session, question_embedding, doc_id,  limit=5):
+def get_contexte_from_db(session, question_embedding, doc_id,  limit=10):
     vector_str = str(question_embedding)
     sql_query = f"""
         SELECT 
@@ -24,8 +24,12 @@ def get_contexte_from_db(session, question_embedding, doc_id,  limit=5):
     seen_pages = set()
     for row in rows:
         p = row['PAGE_NUMBER']
+        content = row['CONTENT']
         if p not in seen_pages:
-            sources.append({"page": p})
+            sources.append({
+                "page": p,
+                "text": content[:200] + "..."
+            })
             seen_pages.add(p)
     return context_text, sources
 
@@ -50,7 +54,7 @@ def ask_doc(question: str, doc_id: str):
         QUESTION:
         {question}
         """
-        print(prompt)
+
         response = ollama.chat(model='mistral', messages=[
             {'role': 'user', 'content': prompt},
         ])

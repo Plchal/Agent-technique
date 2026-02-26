@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async ()=> {
                                 <span class="badge rounded-pill bg-secondary">Page ${s.page}</span>
                             </div>
                             <p class="card-text small text-dark mb-0" style="font-style: italic;">
-                                "...${s.content}..."
+                                "...${s.text}..."
                             </p>
                         </div>
                     </div>

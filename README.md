@@ -369,6 +369,12 @@ Créer un dossier ollama_data avec la commande suivante `mkdir ollama_data`
 Puis lancer le projet avec la commande suivante `docker compose -f docker-compose.yml up -d`
 Une fois les services disponibles, ouvrez une page web à l'adresse suivante `http://0.0.0.0:3000/`
 
+![Interface](./pictures/interface.png)
+
+Meme demande que pour le POC : "Procédure d'entretien périodique vidange huile moteur et remplacement filtre à huile avec tous les couples de serrage necessaire".
+* Voici le resultat :
+
+![Resultat](./pictures/reponse.png)
 
 # Source :
 
